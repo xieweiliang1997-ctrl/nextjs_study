@@ -1,17 +1,41 @@
+
+import Link from "next/link";
 import {db} from "@/db";
-import {redirect} from "next/navigation";
+import {deleteSnippet} from "@/actions";
 
-export default function Page(){
-  async function createSnippet(formData:FormData){
-    "use server";
-    const title = formData.get("title") as string;
-    const code = formData.get("code") as string;
-    const data = await db.snippet.create({data:{title, code}})
-    console.log(data)
-    redirect('/')
+interface IProps {
+  params:{
+    id:string;
   }
-  return (
+}
 
-    
-)
+export default async function Page(props:IProps){
+  const id = props.params.id;
+  const snippet = await db.snippet.findFirst({
+    where:{id:parseInt(id)}
+  })
+  if (!snippet){
+    return <div>Not Found...</div>
+  }
+
+  const deleteSnippetWithId = deleteSnippet.bind(null,+id)
+  return (
+    <div>
+      <div className='flex items-center justify-between mt-10'>
+        <h1 className='font-bold text-lg'>{snippet.title}</h1>
+        <div className='flex gap-4'>
+          <Link className='p-2 border border-teal-500 rounded' href={`/snippets/${id}/edit`}>Edit</Link>
+          {/*<SnippetDelButton id={parseInt(id)}></SnippetDelButton>*/}
+          <form action={deleteSnippetWithId}>
+            <button className='p-2 border border-teal-500 rounded'>Delete</button>
+          </form>
+        </div>
+      </div>
+      <pre className="mt-5 p-3 border border-teal-500 rounded bg-gray-200">
+        <code>
+          {snippet.code}
+        </code>
+      </pre>
+    </div>
+  )
 }

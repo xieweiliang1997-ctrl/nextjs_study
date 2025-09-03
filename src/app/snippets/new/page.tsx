@@ -1,13 +1,26 @@
 import {db} from "@/db";
 import {redirect} from "next/navigation";
+import {revalidatePath} from "next/cache";
 
 export default function Page(){
+
   async function createSnippet(formData:FormData){
     "use server";
     const title = formData.get("title") as string;
     const code = formData.get("code") as string;
-    const data = await db.snippet.create({data:{title, code}})
-    console.log(data)
+    // if (typeof title !== "string"||title.length<=3){
+    //   return{
+    //     message:`title is too short`,
+    //   }
+    // }
+    //
+    // if (typeof code !== "string"||code.length<=3){
+    //   return{
+    //     message:`code is too short`,
+    //   }
+    // }
+    await db.snippet.create({data:{title, code}})
+    revalidatePath('/')
     redirect('/')
   }
   return (

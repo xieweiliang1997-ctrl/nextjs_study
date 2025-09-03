@@ -2,6 +2,11 @@
 // import {useEffect, useState} from "react";
 // import "@/db"
 
+// export const revalidate = 0;
+// export const dynamic = "force-dynamic"
+// export const revalidate = 5;
+
+
 
 import Link from "next/link";
 import {db} from "@/db";

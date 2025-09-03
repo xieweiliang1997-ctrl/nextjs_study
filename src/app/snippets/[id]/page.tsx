@@ -39,3 +39,10 @@ export default async function Page(props:IProps){
     </div>
   )
 }
+
+export async function generateStaticParams(){
+  const snipptes = await db.snippet.findMany();
+  return snipptes.map((snippet)=>(
+    {id:snippet.id.toString()}
+  ))
+}
